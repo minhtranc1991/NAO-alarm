@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 public class PriceList {
@@ -14,14 +15,18 @@ public class PriceList {
         BufferedReader reader;
         String line;
         Prices prices = new Prices();
+        int status = 0;
         try {
             URL url = new URL("https://exchange.vndc.io/exchange/api/v1/showup-prices");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
-
-            int status = connection.getResponseCode();
+            try {
+                status = connection.getResponseCode();
+            } catch (SocketTimeoutException e) {
+                e.printStackTrace();
+            }
 
             if (status > 299) {
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));

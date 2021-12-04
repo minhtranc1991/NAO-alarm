@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 
 public class Alarm {
@@ -22,7 +23,7 @@ public class Alarm {
             buyUSDT = base / prices.getUSDTVNDC().getBid() / prices.getONUSUSDT().getBid() * prices.getONUSVNDC().getAsk();
 
             if (buyONUS != lastBuyONUS || buyUSDT != lastBuyUSDT) {
-                System.out.println("-----------------------------------------------------------------");
+                System.out.println("---------------------------------------------------------------------------------------------------------------");
                 System.out.println(dateTime + ": ");
                 System.out.println("HTD/USDT: " + prices.getHTDUSDT() + " HTD/VNDC: Price(bid=" + prices.getHTDUSDT().getBid() * prices.getUSDTVNDC().getBid() +
                         ", ask=" + prices.getHTDUSDT().getAsk() * prices.getUSDTVNDC().getAsk() + ") Sale price: " + lastHTDSalePrice);
@@ -36,13 +37,17 @@ public class Alarm {
                 lastBuyUSDT = buyUSDT;
                 System.out.flush();
             }
+//            else {
+//                System.out.println("---------------------------------------------------------------------------------------------------------------");
+//                System.out.println(dateTime + ": ");
+//            }
 
-            if (buyONUS >= base * 1.001) {
+            if (buyONUS >= base * 1.002) {
                 Toolkit.getDefaultToolkit().beep();
-                System.out.println("Buy ONUS: " + (buyONUS - 1) * 0.098 * prices.getONUSVNDC().getBid() + "M !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            } else if (buyUSDT >= base * 1) {
+                System.out.println("Buy ONUS: " + (buyONUS - 1) * 0.065 * prices.getONUSVNDC().getBid() + "M !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            } else if (buyUSDT >= base * 1.01) {
                 Toolkit.getDefaultToolkit().beep();
-                System.out.println("Buy USDT: " + (buyUSDT - 0.998) * 51000 + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.out.println("Buy USDT: " + (buyUSDT - 1) * 50000 + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
             if (askHTDPrice >= lastHTDSalePrice) {
                 Toolkit.getDefaultToolkit().beep();
