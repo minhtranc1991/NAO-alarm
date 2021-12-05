@@ -45,7 +45,7 @@ public class Alarm {
             if (buyONUS >= base * 1.002) {
                 Toolkit.getDefaultToolkit().beep();
                 System.out.println("Buy ONUS: " + (buyONUS - 1) * 0.065 * prices.getONUSVNDC().getBid() + "M !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            } else if (buyUSDT >= base * 1.01) {
+            } else if (buyUSDT >= base * 1) {
                 Toolkit.getDefaultToolkit().beep();
                 System.out.println("Buy USDT: " + (buyUSDT - 1) * 50000 + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }

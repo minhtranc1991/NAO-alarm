@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,6 +26,10 @@ public class PriceList {
             try {
                 status = connection.getResponseCode();
             } catch (SocketTimeoutException e) {
+                for (int i = 10; i > 0; i--) {
+                    Toolkit.getDefaultToolkit().beep();
+                    Thread.sleep(1000);
+                }
                 e.printStackTrace();
             }
 
@@ -45,7 +50,7 @@ public class PriceList {
 
             ObjectMapper mapper = new ObjectMapper();
             prices = mapper.readValue(String.valueOf(responseContent), Prices.class);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
             connection.disconnect();
