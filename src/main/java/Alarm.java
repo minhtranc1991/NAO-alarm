@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 
 public class Alarm {
@@ -16,7 +15,14 @@ public class Alarm {
             float lastHTDSalePrice = 47967;
             PriceList priceList = new PriceList();
             Prices prices = priceList.connection();
-            float askHTDPrice = prices.getHTDUSDT().getAsk() * prices.getONUSUSDT().getAsk();
+            float askHTDPrice;
+            try {
+                askHTDPrice = prices.getHTDUSDT().getAsk() * prices.getONUSUSDT().getAsk();
+            } catch (NullPointerException e) {
+                Toolkit.getDefaultToolkit().beep();
+                e.printStackTrace();
+                continue;
+            }
             LocalDateTime dateTime = LocalDateTime.now();
 
             buyONUS = base / prices.getONUSVNDC().getBid() * prices.getONUSUSDT().getAsk() * prices.getUSDTVNDC().getAsk();
@@ -37,10 +43,6 @@ public class Alarm {
                 lastBuyUSDT = buyUSDT;
                 System.out.flush();
             }
-//            else {
-//                System.out.println("---------------------------------------------------------------------------------------------------------------");
-//                System.out.println(dateTime + ": ");
-//            }
 
             if (buyONUS >= base * 1.002) {
                 Toolkit.getDefaultToolkit().beep();
