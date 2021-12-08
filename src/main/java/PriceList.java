@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -25,7 +26,7 @@ public class PriceList {
             try {
                 status = connection.getResponseCode();
             } catch (SocketTimeoutException e) {
-                e.printStackTrace();
+                System.out.println("Disconnected !");
             }
 
             if (status > 299) {
