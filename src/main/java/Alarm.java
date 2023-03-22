@@ -5,49 +5,35 @@ public class Alarm {
 
     public static void main(String[] args) {
 
-        float lastBuyONUS = 0;
-        float lastBuyUSDT = 0;
+        float naoMA = 1839;
 
         while (true) {
-            float buyONUS;
-            float buyUSDT;
-            int base = 1;
-            float lastHTDSalePrice = 47967;
+            float buyNAO;
+            float sellNAO;
+            float slippage = 1.05f;
             PriceList priceList = new PriceList();
             try {
                 Prices prices = priceList.connection();
-                float askHTDPrice = prices.getHTDUSDT().getAsk() * prices.getONUSUSDT().getAsk();
+                float askNAOPrice = prices.getNAOVNDC().getAsk();
+                float bidNAOPrice = prices.getNAOVNDC().getBid();
                 LocalDateTime dateTime = LocalDateTime.now();
 
-                buyONUS = base / prices.getONUSVNDC().getBid() * prices.getONUSUSDT().getAsk() * prices.getUSDTVNDC().getAsk();
-                buyUSDT = base / prices.getUSDTVNDC().getBid() / prices.getONUSUSDT().getBid() * prices.getONUSVNDC().getAsk();
-
-                if (buyONUS != lastBuyONUS || buyUSDT != lastBuyUSDT) {
+                buyNAO = naoMA / slippage;
+                sellNAO = naoMA * slippage;
+//                naoMA = (naoMA * 233 + askNAOPrice + bidNAOPrice) / 235;
+                if (buyNAO < askNAOPrice || sellNAO > bidNAOPrice) {
                     System.out.println("---------------------------------------------------------------------------------------------------------------");
                     System.out.println(dateTime + ": ");
-                    System.out.println("HTD/USDT: " + prices.getHTDUSDT() + " HTD/VNDC: Price(bid=" + format(prices.getHTDUSDT().getBid() * prices.getUSDTVNDC().getBid()) +
-                            ", ask=" + format(prices.getHTDUSDT().getAsk() * prices.getUSDTVNDC().getAsk()) + ") Sale price: " + format(lastHTDSalePrice));
-                    System.out.println("ONUS/USDT: Price(bid=" + format(prices.getONUSUSDT().getBid() * prices.getUSDTVNDC().getBid()) +
-                            ", ask=" + format(prices.getONUSUSDT().getAsk() * prices.getUSDTVNDC().getAsk()) + ") - " + prices.getONUSUSDT());
-                    System.out.println("ONUS/VNDC: " + prices.getONUSVNDC());
-                    System.out.println("USDT/VNDC: " + prices.getUSDTVNDC());
-                    System.out.println("Buy ONUS: " + format(buyONUS * 100) + " %");
-                    System.out.println("Buy USDT: " + format(buyUSDT * 100) + " %");
-                    lastBuyONUS = buyONUS;
-                    lastBuyUSDT = buyUSDT;
+                    System.out.println("NAO/VNDC: Price(bid= " + bidNAOPrice + ", ask= " + askNAOPrice + "), Buy: " + format(buyNAO) + " VNDC, Sell: " + format(sellNAO) + " VNDC");
                     System.out.flush();
                 }
 
-                if (buyONUS >= base * 1.001) {
+                if (buyNAO >= bidNAOPrice) {
                     Toolkit.getDefaultToolkit().beep();
-                    System.out.println("Buy ONUS: " + format((buyONUS - 1) * 0.065 * prices.getONUSVNDC().getBid()) + "M !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                } else if (buyUSDT >= base * 1) {
+                    System.out.println("Buy NAO: " + format(buyNAO) + " VNDC !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                } else if (sellNAO <= askNAOPrice) {
                     Toolkit.getDefaultToolkit().beep();
-                    System.out.println("Buy USDT: " + format((buyUSDT - 1) * 50000) + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                }
-                if (askHTDPrice >= lastHTDSalePrice) {
-                    Toolkit.getDefaultToolkit().beep();
-                    System.out.println("Sell HTD ask price: " + format(askHTDPrice) + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    System.out.println("Sell NAO: " + format(sellNAO) + " VNDC !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 }
 
                 Thread.sleep(3000);
@@ -65,10 +51,6 @@ public class Alarm {
     }
 
     private static String format(float value) {
-        return String.format("%.2f", value);
-    }
-
-    private static String format(double value) {
         return String.format("%.2f", value);
     }
 }
